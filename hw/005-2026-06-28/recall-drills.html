@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recall Drills + Listening (TTS) — Lesson 005</title>
+<style>
+  :root{
+    --bg:#f5f3ee; --card:#ffffff; --ink:#26241f; --muted:#8a8478;
+    --line:#e6e1d6; --accent:#0f766e; --accent-soft:#d7efec;
+    --r:#0f766e; --p:#b45309; --a:#0f766e; --b:#7c3aed;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    padding:24px 16px 96px;
+  }
+  .wrap{max-width:760px; margin:0 auto}
+  h1{font-size:22px; margin:0 0 2px}
+  .sub{color:var(--muted); font-size:13px; margin-bottom:14px}
+  .lens{
+    background:var(--accent-soft); border:1px solid #bfe3de; border-radius:12px;
+    padding:12px 14px; font-size:14px; margin-bottom:18px;
+  }
+  .lens b{color:var(--accent)}
+  .warn{font-size:12px;color:#b45309;background:#fdf4e7;border:1px solid #f1dcbf;border-radius:10px;padding:8px 11px;margin-bottom:18px;display:none}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; margin-bottom:16px; box-shadow:0 1px 2px rgba(0,0,0,.03);
+  }
+  .card h2{font-size:15px; margin:0 0 2px; display:flex; align-items:center; gap:8px}
+  .pill{font-size:11px; font-weight:700; color:#fff; border-radius:999px; padding:2px 8px; letter-spacing:.3px}
+  .pill.r{background:var(--r)} .pill.p{background:var(--p)} .pill.a{background:var(--a)} .pill.b{background:var(--b)}
+  .card .hint{color:var(--muted); font-size:13px; margin:0 0 14px}
+  .q{margin-bottom:18px; padding-bottom:14px; border-bottom:1px dashed var(--line)}
+  .q:last-child{border-bottom:0; margin-bottom:0; padding-bottom:0}
+  .num{font-size:12px; color:var(--muted); font-weight:700; margin-bottom:7px}
+  .num .tag{color:#7c3aed}
+  .players{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:10px}
+  .play{
+    border:1px solid var(--line); background:#fdfcf9; color:var(--ink); border-radius:9px;
+    padding:8px 13px; font:inherit; font-weight:600; font-size:14px; cursor:pointer; display:inline-flex; gap:6px; align-items:center;
+  }
+  .play:hover{border-color:var(--accent)}
+  .play.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .reveal{font-size:12px; color:var(--muted); cursor:pointer; text-decoration:underline; background:none; border:0}
+  .transcript{display:none; font-size:14px; color:var(--muted); font-style:italic; margin:0 0 10px}
+  .prompt{font-size:14px; margin-bottom:8px}
+  .prompt code{background:#efece4; border-radius:6px; padding:2px 7px; font-size:13px}
+  .prompt i{color:#3a372f}
+  .opts label{
+    display:flex; align-items:center; gap:9px; padding:8px 10px; border:1px solid var(--line);
+    border-radius:9px; margin-bottom:7px; cursor:pointer; font-size:14px; background:#fdfcf9;
+  }
+  .opts label:has(input:checked){border-color:var(--accent); background:var(--accent-soft); font-weight:600}
+  .opts input{accent-color:var(--accent)}
+  input[type=text]{
+    width:100%; border:1px solid var(--line); border-radius:9px; padding:9px 11px;
+    font:inherit; color:var(--ink); background:#fdfcf9;
+  }
+  input[type=text]:focus{outline:none; border-color:var(--accent)}
+  .bar{
+    position:fixed; left:0; right:0; bottom:0; background:#ffffffcc; backdrop-filter:blur(6px);
+    border-top:1px solid var(--line); padding:12px 16px; display:flex; gap:10px;
+    align-items:center; justify-content:center;
+  }
+  .prog{font-size:12px; color:var(--muted); margin-right:auto}
+  button.act{
+    border:0; border-radius:10px; padding:11px 18px; font:inherit; font-weight:600;
+    cursor:pointer; background:var(--accent); color:#fff;
+  }
+  button.ghost{background:#efece4; color:var(--ink); border:1px solid var(--line)}
+  .saved{font-size:12px; color:var(--muted)}
+  #out{white-space:pre-wrap; background:#1f1d19; color:#e9e4d8; border-radius:12px;
+    padding:14px; font:13px/1.5 ui-monospace,Menlo,monospace; margin:14px 0 0; display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Recall Drills + Listening 🎧 — Lesson 005</h1>
+  <div class="sub">Built from today's wins: <b>tocca a te</b> &amp; the playground words, the <b>pronoun-on-the-back-of-a-verb</b> (tirarmi/farti), <b>dovrai vs dovrei</b> + the <b>-erei</b> conditional, and <b>imperfetto</b> for "when I was little". Answer out loud, then type. <b>Copy my answers</b> → paste back.</div>
+
+  <div class="lens">
+    <b>Order of play:</b> do <span style="color:var(--r)"><b>R</b></span> (recall) and
+    <span style="color:var(--p)"><b>P</b></span> (say it for real) from memory, then
+    <span style="color:var(--a)"><b>A</b></span>/<span style="color:var(--b)"><b>B</b></span> with the
+    🔈 voice — <b>▶ Lento</b> (0.6×) first, then <b>▶ Normale</b>. <b>B = handle the comeback</b>:
+    someone speaks to <i>you</i> — type the reply you'd really say. Don't reveal the text until you've tried.
+  </div>
+  <div class="warn" id="warn">⚠️ Your browser didn't expose an Italian voice — playback may be silent. Use the <b>"show text"</b> link as a fallback and tell me, so we can adjust.</div>
+
+  <div id="quiz"></div>
+
+  <pre id="out"></pre>
+</div>
+
+<div class="bar">
+  <span class="prog" id="prog"></span>
+  <button class="act" onclick="generate()">📋 Copy my answers</button>
+  <button class="act ghost" onclick="clearAll()">Clear</button>
+  <span class="saved" id="saved"></span>
+</div>
+
+<script>
+const KEY = 'drills-l005-v1';
+
+const SECTIONS = [
+  {
+    title: "Recall — today's rules", cls:"r",
+    hint:"From memory. Peel the melt apart or pick the right form.",
+    items: [
+      { id:"r1", prompt:'<b>Peel the pronoun off the back.</b> Split into verb + pronoun: <code>tirarmi</code> = ___ &nbsp;·&nbsp; <code>farti</code> = ___ &nbsp;·&nbsp; <code>prenderla</code> = ___' },
+      { id:"r2", prompt:'<b>Playground commands.</b> Your kid won\'t stop and it\'s their turn. Say: <i>"Stop it! That\'s enough — now it\'s your turn."</i>' },
+      { id:"r3", prompt:'<b>dovrai vs dovrei.</b> Fill: <i>"You\'ll have to wait"</i> → ___ aspettare. &nbsp;·&nbsp; <i>"I\'d help you if I had time"</i> → Ti ___ se avessi tempo.' },
+      { id:"r4", prompt:'<b>The conditional ending (-erei).</b> <i>io</i> form: <code>parlare</code> → ___ &nbsp;·&nbsp; <code>aiutare</code> → ___ &nbsp;·&nbsp; <code>giocare</code> → ___' },
+      { id:"r5", prompt:'<b>imperfetto trigger.</b> Say: <i>"When I was little, I lived in Tokyo and spoke only Japanese."</i>' },
+    ]
+  },
+  {
+    title: "New words from today's clip", cls:"p",
+    hint:"Real lines from the Peppa dialogue you dictated. Produce the missing word.",
+    items: [
+      { id:"v1", prompt:'<code>riuscire a</code> + inf. = "to manage to". Say: <i>"I managed to understand everything."</i> <span style="color:var(--muted)">(sono riuscito a…)</span>' },
+      { id:"v2", prompt:'Fill from the clip: <i>"You got it all wrong, as always"</i> → Hai ___ tutto, come sempre. &nbsp;·&nbsp; <i>"The hiccup has disappeared"</i> → Il singhiozzo è ___. &nbsp;·&nbsp; <i>"George is ruining the game"</i> → George sta ___ il gioco.' },
+    ]
+  },
+  {
+    title: "Say it for real — your Rome situations", cls:"p",
+    hint:"Full sentences, out loud first.",
+    items: [
+      { id:"p1", prompt:'At the playground, to a parent: <i>"It\'s your daughter\'s turn to bring the snack tomorrow, okay?"</i> <span style="color:var(--muted)">(tocca a… + portare la merenda)</span>' },
+      { id:"p2", prompt:'To the teacher: <i>"I managed to understand almost everything you said."</i> <span style="color:var(--muted)">(riuscire a + capire)</span>' },
+    ]
+  },
+  {
+    title: "Capisci? — catch the meaning", cls:"a",
+    hint:"Listen (Lento, then Normale), then choose. These hide today's melts and words.",
+    items: [
+      { id:"a1", audio:"Adesso tocca a te, coraggio!",
+        q:"What's being said to you?",
+        opts:["Now it's your turn — come on, you can do it!","Now touch me, please","It's too late now","Come here right now"],
+        a:"Now it's your turn — come on, you can do it!" },
+      { id:"a2", audio:"Il cane sta rovinando il giardino.",
+        q:"What's happening?",
+        opts:["The dog is ruining the garden","The dog is playing in the garden","The dog ran into the garden","The garden is too big for the dog"],
+        a:"The dog is ruining the garden" },
+      { id:"a3", audio:"Da piccolo non riuscivo a dormire senza luce.",
+        q:"What does the speaker mean?",
+        opts:["As a kid I couldn't manage to sleep without a light","As a kid I slept very well","I can't sleep with the light on","The child won't sleep tonight"],
+        a:"As a kid I couldn't manage to sleep without a light" },
+      { id:"a4", audio:"Hai sbagliato strada, dovrai tornare indietro.",
+        q:"What's the situation?",
+        opts:["You took the wrong road — you'll have to go back","You're on the right road, keep going","I made a mistake, sorry","The road is closed today"],
+        a:"You took the wrong road — you'll have to go back" },
+    ]
+  },
+  {
+    title: "Rispondi tu — handle the comeback", cls:"b",
+    hint:"Someone speaks to YOU. Listen, then type the reply you'd actually say. Full sentences.",
+    items: [
+      { id:"b1", audio:"Senti, tocca a te portare la merenda venerdì, ti va?",
+        who:"Another parent", q:"Your reply:" },
+      { id:"b2", audio:"Scusa, sai dirmi dov'è la palestra?",
+        who:"A parent in the hallway", q:"Your reply:" },
+      { id:"b3", audio:"Com'è andata la prima settimana di scuola di tua figlia?",
+        who:"The teacher at pickup", q:"Your reply:" },
+    ]
+  },
+];
+
+/* ---- TTS engine (same approach as the placement test) ---- */
+let itVoice=null, hasIt=false;
+function loadVoices(){
+  const vs = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  itVoice = vs.find(v=>/^it/i.test(v.lang)) || null;
+  hasIt = !!itVoice;
+  if(window.speechSynthesis && vs.length && !hasIt){ document.getElementById('warn').style.display='block'; }
+}
+if(window.speechSynthesis){ loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+else { document.getElementById('warn').style.display='block'; }
+function speak(text, rate){
+  if(!window.speechSynthesis){ return false; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='it-IT'; u.rate=rate; if(itVoice) u.voice=itVoice;
+  window.speechSynthesis.speak(u); return true;
+}
+
+function allItems(){ return SECTIONS.flatMap(s=>s.items); }
+
+function render(){
+  const root = document.getElementById('quiz');
+  SECTIONS.forEach(sec=>{
+    const card = document.createElement('div');
+    card.className='card';
+    let h = '<h2><span class="pill '+sec.cls+'">'+sec.cls.toUpperCase()+'</span>'+sec.title+'</h2><p class="hint">'+sec.hint+'</p>';
+    sec.items.forEach((it,i)=>{
+      h += '<div class="q">';
+      h += '<div class="num">'+sec.cls.toUpperCase()+(i+1)+(it.who?' · <span class="tag">'+it.who+'</span>':'')+'</div>';
+      if(it.audio){
+        h += '<div class="players">'
+           +   '<button type="button" class="play primary" data-play="'+it.id+'" data-rate="0.6">▶ Lento</button>'
+           +   '<button type="button" class="play" data-play="'+it.id+'" data-rate="1.0">▶ Normale</button>'
+           +   '<button type="button" class="reveal" data-reveal="'+it.id+'">show text</button>'
+           + '</div>';
+        h += '<div class="transcript" id="t-'+it.id+'">«'+it.audio+'»</div>';
+      }
+      h += '<div class="prompt">'+(it.prompt||it.q)+'</div>';
+      if(it.opts){
+        h += '<div class="opts">';
+        it.opts.forEach(o=>{
+          const v=o.replace(/"/g,'&quot;');
+          h += '<label><input type="radio" name="'+it.id+'" value="'+v+'"> <span>'+o+'</span></label>';
+        });
+        h += '</div>';
+      } else {
+        h += '<input type="text" id="'+it.id+'" placeholder="'+(it.audio?'la tua risposta in italiano…':'your answer…')+'" autocomplete="off">';
+      }
+      h += '</div>';
+    });
+    card.innerHTML = h;
+    root.appendChild(card);
+  });
+  document.querySelectorAll('input').forEach(el=> el.addEventListener('input', ()=>{ save(); updateProg(); }));
+  document.querySelectorAll('input[type=radio]').forEach(el=> el.addEventListener('change', ()=>{ save(); updateProg(); }));
+}
+
+document.addEventListener('click', function(e){
+  const pb = e.target.closest('[data-play]');
+  if(pb){ const it = allItems().find(x=>x.id===pb.getAttribute('data-play')); const ok = speak(it.audio, parseFloat(pb.getAttribute('data-rate'))); if(!ok){ const t=document.getElementById('t-'+it.id); if(t) t.style.display='block'; } return; }
+  const rv = e.target.closest('[data-reveal]');
+  if(rv){ const t=document.getElementById('t-'+rv.getAttribute('data-reveal')); if(t) t.style.display = (t.style.display==='block'?'none':'block'); return; }
+});
+
+function getAns(it){
+  if(it.opts){ const el=document.querySelector('input[name="'+it.id+'"]:checked'); return el?el.value:''; }
+  const el=document.getElementById(it.id); return el?el.value.trim():'';
+}
+function updateProg(){
+  const total=allItems().length;
+  const done=allItems().filter(it=>getAns(it)).length;
+  document.getElementById('prog').textContent = done+' / '+total+' answered';
+}
+function save(){
+  const data={};
+  allItems().forEach(it=> data[it.id]=getAns(it));
+  localStorage.setItem(KEY, JSON.stringify(data));
+  const s=document.getElementById('saved'); s.textContent='✓ saved';
+  clearTimeout(window._st); window._st=setTimeout(()=> s.textContent='',1200);
+}
+function load(){
+  const raw=localStorage.getItem(KEY); if(!raw) return;
+  const d=JSON.parse(raw);
+  allItems().forEach(it=>{
+    if(d[it.id]==null) return;
+    if(it.opts){ document.querySelectorAll('input[name="'+it.id+'"]').forEach(r=>{ if(r.value===d[it.id]) r.checked=true; }); }
+    else { const el=document.getElementById(it.id); if(el) el.value=d[it.id]; }
+  });
+}
+function stripHtml(h){ const t=document.createElement('div'); t.innerHTML=h; return t.textContent.replace(/\s+/g,' ').trim(); }
+function generate(){
+  let s='My drill answers — Lesson 005 (2026-06-28):\n';
+  SECTIONS.forEach(sec=>{
+    s+='\n['+sec.cls.toUpperCase()+'] '+sec.title+'\n';
+    sec.items.forEach((it,i)=>{
+      const label = sec.cls.toUpperCase()+(i+1);
+      if(it.audio) s+='  '+label+'. (heard: «'+it.audio+'»)'+(it.q&&it.opts?' Q: '+it.q:'')+'\n';
+      else s+='  '+label+'. '+stripHtml(it.prompt)+'\n';
+      s+='      → '+(getAns(it)||'(blank)')+'\n';
+    });
+  });
+  const out=document.getElementById('out'); out.textContent=s; out.style.display='block';
+  navigator.clipboard.writeText(s).then(()=>{ document.getElementById('saved').textContent='✓ copied — paste it back to me'; },()=>{});
+  out.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function clearAll(){
+  if(!confirm('Clear all your answers?')) return;
+  localStorage.removeItem(KEY);
+  allItems().forEach(it=>{ if(it.opts){ document.querySelectorAll('input[name="'+it.id+'"]').forEach(r=>r.checked=false);} else { const el=document.getElementById(it.id); if(el) el.value=''; } });
+  document.getElementById('out').style.display='none';
+  updateProg();
+}
+render();
+load();
+updateProg();
+</script>
+</body>
+</html>

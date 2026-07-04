@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recall Drills — Lesson 002</title>
+<style>
+  :root{
+    --bg:#f5f3ee; --card:#ffffff; --ink:#26241f; --muted:#8a8478;
+    --line:#e6e1d6; --accent:#0f766e; --accent-soft:#d7efec;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    padding:24px 16px 90px;
+  }
+  .wrap{max-width:760px; margin:0 auto}
+  h1{font-size:22px; margin:0 0 2px}
+  .sub{color:var(--muted); font-size:13px; margin-bottom:18px}
+  .lens{
+    background:var(--accent-soft); border:1px solid #bfe3de; border-radius:12px;
+    padding:12px 14px; font-size:14px; margin-bottom:18px;
+  }
+  .lens b{color:var(--accent)}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; margin-bottom:16px; box-shadow:0 1px 2px rgba(0,0,0,.03);
+  }
+  .card h2{font-size:15px; margin:0 0 2px}
+  .card .hint{color:var(--muted); font-size:13px; margin:0 0 14px}
+  .q{margin-bottom:13px}
+  .q .prompt{font-size:14px; margin-bottom:5px}
+  .q .prompt .tag{color:var(--muted); font-size:12px}
+  .q .prompt code{background:#efece4; border-radius:6px; padding:2px 7px; font-size:14px}
+  input[type=text]{
+    width:100%; border:1px solid var(--line); border-radius:9px; padding:9px 11px;
+    font:inherit; color:var(--ink); background:#fdfcf9;
+  }
+  input[type=text]:focus{outline:none; border-color:var(--accent)}
+  .bar{
+    position:fixed; left:0; right:0; bottom:0; background:#ffffffcc; backdrop-filter:blur(6px);
+    border-top:1px solid var(--line); padding:12px 16px; display:flex; gap:10px;
+    align-items:center; justify-content:center;
+  }
+  button{
+    border:0; border-radius:10px; padding:11px 18px; font:inherit; font-weight:600;
+    cursor:pointer; background:var(--accent); color:#fff;
+  }
+  button.ghost{background:#efece4; color:var(--ink); border:1px solid var(--line)}
+  .saved{font-size:12px; color:var(--muted)}
+  #out{white-space:pre-wrap; background:#1f1d19; color:#e9e4d8; border-radius:12px;
+    padding:14px; font:13px/1.5 ui-monospace,Menlo,monospace; margin:14px 0 0; display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Recall Drills 🧠 — Lesson 002</h1>
+  <div class="sub">Answer out loud first, then type. When you're done, hit <b>Copy my answers</b> and paste them back to me — I'll correct them and update your deck.</div>
+
+  <div class="lens">
+    <b>Active recall:</b> pull the answer out of your head before typing. A wrong guess you then correct
+    sticks far better than re-reading. Blanks are fine — they tell me what to reteach.
+  </div>
+
+  <div id="quiz"></div>
+
+  <pre id="out"></pre>
+</div>
+
+<div class="bar">
+  <button onclick="generate()">📋 Copy my answers</button>
+  <button class="ghost" onclick="clearAll()">Clear</button>
+  <span class="saved" id="saved"></span>
+</div>
+
+<script>
+const KEY = 'drills-l002-v1';
+const SECTIONS = [
+  {
+    title: "Drill 1 — Crack the melt",
+    hint: "Each blob is fast, fused speech. Break it into the real separate words.",
+    items: [
+      { id:"d1q1", prompt:'<code>nonvedonoloraditornare</code>' },
+      { id:"d1q2", prompt:'<code>inflèta</code>' },
+      { id:"d1q3", prompt:'<code>stannofacèndocolaziòne</code>' },
+      { id:"d1q4", prompt:'<span class="tag">stretch:</span> <code>nonloso</code>' },
+    ]
+  },
+  {
+    title: "Drill 2 — Say the meaning",
+    hint: "What does each Italian phrase mean (in English)?",
+    items: [
+      { id:"d2q1", prompt:'<i>non vedere l\'ora di…</i>' },
+      { id:"d2q2", prompt:'<i>in fretta</i>' },
+      { id:"d2q3", prompt:'<i>il singhiozzo</i>' },
+      { id:"d2q4", prompt:'<i>la colazione</i>' },
+    ]
+  },
+  {
+    title: "Drill 3 — Give the command (non + infinitive, to your daughter)",
+    hint: "Turn the verb into a “don't ___!” command.",
+    items: [
+      { id:"d3q1", prompt:'<span class="tag">(correre)</span> “Don\'t run!”' },
+      { id:"d3q2", prompt:'<span class="tag">(toccare)</span> “Don\'t touch!”' },
+      { id:"d3q3", prompt:'<span class="tag">(bere il succo troppo in fretta)</span> say the full command' },
+    ]
+  },
+  {
+    title: "Drill 4 — What are they doing right now? (stare + gerundio)",
+    hint: "Build the full sentence.",
+    items: [
+      { id:"d4q1", prompt:'loro / fare colazione →' },
+      { id:"d4q2", prompt:'io / mangiare →' },
+      { id:"d4q3", prompt:'“What are <b>you</b> doing?” (to one person) →' },
+    ]
+  },
+  {
+    title: "Drill 5 — Use it in your Rome life",
+    hint: "Say each one in Italian.",
+    items: [
+      { id:"d5q1", prompt:'“I can\'t wait for the weekend!” <span class="tag">(use non vedere l\'ora di…)</span>' },
+      { id:"d5q2", prompt:'At the school gate, to your daughter: “We\'re a bit in a hurry today.”' },
+      { id:"d5q3", prompt:'To the barista: “Sorry, I drank the coffee too fast!”' },
+    ]
+  },
+];
+
+function render(){
+  const root = document.getElementById('quiz');
+  SECTIONS.forEach(sec => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = '<h2>'+sec.title+'</h2><p class="hint">'+sec.hint+'</p>';
+    sec.items.forEach(it => {
+      const q = document.createElement('div');
+      q.className = 'q';
+      q.innerHTML = '<div class="prompt">'+it.prompt+'</div>' +
+        '<input type="text" id="'+it.id+'" placeholder="your answer…" autocomplete="off">';
+      card.appendChild(q);
+    });
+    root.appendChild(card);
+  });
+  document.querySelectorAll('input').forEach(el => el.addEventListener('input', save));
+}
+function allItems(){ return SECTIONS.flatMap(s => s.items); }
+function save(){
+  const data = {};
+  allItems().forEach(it => data[it.id] = document.getElementById(it.id).value);
+  localStorage.setItem(KEY, JSON.stringify(data));
+  const s = document.getElementById('saved');
+  s.textContent = '✓ saved';
+  clearTimeout(window._st); window._st = setTimeout(()=> s.textContent='', 1200);
+}
+function load(){
+  const raw = localStorage.getItem(KEY);
+  if(!raw) return;
+  const d = JSON.parse(raw);
+  allItems().forEach(it => { if(d[it.id]!=null) document.getElementById(it.id).value = d[it.id]; });
+}
+function stripHtml(h){ const t=document.createElement('div'); t.innerHTML=h; return t.textContent.replace(/\s+/g,' ').trim(); }
+function generate(){
+  let s = 'My drill answers — Lesson 002:\n';
+  SECTIONS.forEach(sec => {
+    s += '\n' + sec.title + '\n';
+    sec.items.forEach((it,i) => {
+      const ans = document.getElementById(it.id).value.trim();
+      s += '  ' + (i+1) + '. [' + stripHtml(it.prompt) + ']  →  ' + (ans || '(blank)') + '\n';
+    });
+  });
+  const out = document.getElementById('out');
+  out.textContent = s; out.style.display = 'block';
+  navigator.clipboard.writeText(s).then(
+    () => { const sv=document.getElementById('saved'); sv.textContent='✓ copied — paste it back to me'; },
+    () => {}
+  );
+  out.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+function clearAll(){
+  if(!confirm('Clear all your answers?')) return;
+  localStorage.removeItem(KEY);
+  allItems().forEach(it => document.getElementById(it.id).value = '');
+  document.getElementById('out').style.display='none';
+}
+render();
+load();
+</script>
+</body>
+</html>

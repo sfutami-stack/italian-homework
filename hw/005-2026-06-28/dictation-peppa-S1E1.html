@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dictation Sheet — listen &amp; fill each line</title>
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════╗
+  ║  GENERAL, REUSABLE dictation sheet. Works for ANY YouTube video.          ║
+  ║                                                                          ║
+  ║  ▸ RUN OVER A LOCAL SERVER so the in-page player + per-line replay +      ║
+  ║    Lento/Normale all work (file:// can't control a YouTube embed). From   ║
+  ║    the project folder:                                                    ║
+  ║        python3 -m http.server 8000                                        ║
+  ║    then open  http://localhost:8000/tools/dictation-sheet.html            ║
+  ║                                                                          ║
+  ║  ▸ USAGE: paste the YouTube URL, paste the cleaned script (one line each, ║
+  ║    "M:SS-M:SS  text"), press Build. The tutor produces the script from    ║
+  ║    yt-dlp for the URL + range you ask for — a page can't fetch subs itself.║
+  ╚══════════════════════════════════════════════════════════════════════════╝
+-->
+<style>
+  :root{
+    --bg:#f5f3ee; --card:#ffffff; --ink:#26241f; --muted:#8a8478;
+    --line:#e6e1d6; --accent:#0f766e; --accent-soft:#d7efec; --miss:#b91c1c; --miss-bg:#fbe4e4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; padding:24px 16px 80px}
+  .wrap{max-width:880px; margin:0 auto}
+  h1{font-size:22px; margin:0 0 2px}
+  .sub{color:var(--muted); font-size:13px; margin-bottom:16px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px; margin-bottom:16px; box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .card h2{font-size:14px; margin:0 0 10px; letter-spacing:.01em}
+  label{display:block; font-size:12px; color:var(--muted); margin:0 0 4px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.04em}
+  input[type=text], textarea{width:100%; border:1px solid var(--line); border-radius:10px; padding:9px 12px;
+    font:inherit; color:var(--ink); background:#fdfcf9; resize:vertical}
+  input[type=text]:focus, textarea:focus{outline:none; border-color:var(--accent)}
+  textarea#script{min-height:120px; font:13px/1.5 ui-monospace,Menlo,monospace}
+  .row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px}
+  .row > div{flex:1; min-width:160px}
+  .row .narrow{flex:0 0 180px}
+  .lens{background:var(--accent-soft); border:1px solid #bfe3de; border-radius:12px;
+    padding:12px 14px; font-size:14px; margin-bottom:16px}
+  .lens b{color:var(--accent)}
+  .serverwarn{background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; padding:9px 12px; font-size:12.5px; color:#92400e; margin-bottom:14px}
+  .serverwarn code{background:#fde9d3; border-radius:5px; padding:1px 5px}
+  .pick{background:#f0f7f6; border:1px solid #cfe6e2; border-radius:12px; padding:12px 14px; margin:4px 0 14px}
+  .pickhead{font-size:13px; font-weight:700; color:var(--accent); margin-bottom:8px}
+  .pickhead span{font-weight:600; color:var(--muted); text-transform:none; letter-spacing:0}
+  .pickhint{font-size:12.5px; color:var(--muted); margin-top:2px}
+  .pickhint code{background:#dcefe9; border-radius:5px; padding:1px 5px}
+  .timerow{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  .timerow input[type=text]{width:64px; text-align:center; padding:9px 6px}
+  .tsep{font-weight:700; color:var(--muted); font-size:18px}
+  .tto{color:var(--muted); font-size:13px; margin:0 6px}
+  .tlbl{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; font-weight:600}
+  #playerwrap{position:relative; padding-bottom:48%; height:0; border-radius:12px; overflow:hidden; background:#000; display:none}
+  #player{position:absolute; top:0; left:0; width:100%; height:100%; border:0}
+  .speedbar{display:flex; gap:8px; align-items:center; margin:12px 0 0; flex-wrap:wrap}
+  .speedbar .lbl{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; font-weight:600}
+  button{border:0; border-radius:10px; padding:9px 14px; font:inherit; font-weight:600; cursor:pointer; background:var(--accent); color:#fff}
+  button.ghost{background:#efece4; color:var(--ink); border:1px solid var(--line)}
+  button.mini{padding:6px 10px; font-size:13px}
+  .speedbar button{background:#efece4; color:var(--ink); border:1px solid var(--line)}
+  .speedbar button.on{background:var(--accent); color:#fff; border-color:var(--accent)}
+  .lrow{display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-top:1px solid var(--line)}
+  .lrow:first-child{border-top:0}
+  .lnum{flex:0 0 auto; width:22px; text-align:right; color:var(--muted); font-size:13px; padding-top:9px; font-weight:700}
+  .lmain{flex:1; min-width:0}
+  .ltop{display:flex; gap:8px; align-items:center; margin-bottom:6px; flex-wrap:wrap}
+  .play{background:var(--accent); color:#fff; border-radius:8px; padding:5px 11px; font-size:13px; font-weight:600; white-space:nowrap; border:0; cursor:pointer}
+  .play[disabled]{background:#cdcabf; cursor:default}
+  .wc{font-size:12px; color:var(--muted)}
+  .reveal-btn{background:#efece4; color:var(--ink); border:1px solid var(--line)}
+  .lrow input[type=text]{width:100%}
+  .answer{margin-top:7px; font-size:14.5px; display:none; background:#faf8f3; border:1px dashed var(--line); border-radius:9px; padding:8px 11px}
+  .answer .miss{color:var(--miss); background:var(--miss-bg); border-radius:4px; padding:0 3px; font-weight:600}
+  .answer .ok{color:var(--ink)}
+  .answer .tag{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; display:block; margin-bottom:3px}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px; align-items:center}
+  .saved{font-size:12px; color:var(--muted)}
+  #out{white-space:pre-wrap; background:#1f1d19; color:#e9e4d8; border-radius:12px; padding:14px; font:13px/1.5 ui-monospace,Menlo,monospace; margin-top:12px; display:none}
+  #empty{color:var(--muted); font-size:14px; padding:6px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Dictation Sheet 🎧</h1>
+  <div class="sub">Paste a video + its script → listen to each line and type what you hear. Works for any YouTube video. <b style="color:var(--accent)">· build 2026-06-28e</b></div>
+
+  <div class="serverwarn">
+    ▸ For the in-page player &amp; per-line replay to work, open this over a local server, not <code>file://</code>:
+    run <code>python3 -m http.server 8000</code> in the project folder, then visit
+    <code>http://localhost:8000/tools/dictation-sheet.html</code>.
+  </div>
+
+  <div class="lens">
+    <b>Just listen and type.</b> Don't chase perfection — find the <b>word boundaries</b>. Hit <b>›reveal</b> on a line only after you've tried it; the words you missed light up so you see exactly where the blur was.
+  </div>
+
+  <div class="card">
+    <h2>1 · Set up the clip</h2>
+    <div class="row" style="margin-bottom:8px">
+      <div><label>YouTube URL</label><input type="text" id="url" placeholder="https://www.youtube.com/watch?v=…"></div>
+    </div>
+
+    <label>Time range — just type the numbers (no <code style="text-transform:none">:</code> or <code style="text-transform:none">–</code> needed)</label>
+    <div class="timerow">
+      <span class="tlbl">Start</span>
+      <input type="text" id="t-sm" inputmode="numeric" maxlength="3" placeholder="min">
+      <span class="tsep">:</span>
+      <input type="text" id="t-ss" inputmode="numeric" maxlength="2" placeholder="sec">
+      <span class="tto">→</span>
+      <span class="tlbl">End</span>
+      <input type="text" id="t-em" inputmode="numeric" maxlength="3" placeholder="min">
+      <span class="tsep">:</span>
+      <input type="text" id="t-es" inputmode="numeric" maxlength="2" placeholder="sec">
+    </div>
+
+    <div class="actions" style="margin:12px 0 12px">
+      <button class="ghost mini" onclick="loadVideo()">↻ Load video</button>
+      <button class="ghost mini" onclick="requestScript()">⬇ Ask tutor for the script</button>
+      <span class="saved" id="reqmsg"></span>
+    </div>
+
+    <div class="pick">
+      <div class="pickhead">✂ Practice this segment yourself — <span>no tutor script needed</span></div>
+      <div class="timerow">
+        <span class="tlbl">Seconds per line</span>
+        <input type="text" id="slice" inputmode="numeric" maxlength="3" placeholder="8">
+        <button onclick="buildSlices()">✂ Build slices</button>
+        <span class="saved" id="slicemsg"></span>
+      </div>
+      <div class="pickhint">Set <b>Start</b> and <b>End</b> above, choose how many seconds each line should be, then <b>Build slices</b>. You get one replay button + typing box per slice — then <b>⬇ Save for tutor</b> and I'll mark it against the real subtitles.</div>
+    </div>
+
+    <label>…or paste a Script from your tutor — one line each: <code style="text-transform:none">M:SS-M:SS  text</code></label>
+    <textarea id="script" spellcheck="false" placeholder="1:02-1:07  Prima riga…&#10;1:07-1:10  Seconda riga…"></textarea>
+    <div class="actions" style="margin-top:10px">
+      <button onclick="buildFromInputs()">Build sheet ↓</button>
+      <button class="ghost mini" onclick="resetExample()">↺ Reset to example</button>
+      <span class="saved" id="buildmsg"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="playerwrap"><div id="player"></div></div>
+    <div class="speedbar">
+      <span class="lbl">Speed</span>
+      <button id="sp-slow" onclick="setRate(0.75)">▶ Lento 0.75×</button>
+      <button id="sp-norm" class="on" onclick="setRate(1)">▶ Normale 1×</button>
+      <button class="ghost mini" onclick="playChunk()">▶ Play whole clip</button>
+    </div>
+  </div>
+
+  <div class="card" id="lines"><div id="empty">Paste a URL + script above and press <b>Build sheet</b>.</div></div>
+
+  <div class="actions">
+    <button onclick="download()">⬇ Save for tutor</button>
+    <button class="ghost" onclick="generate()">📋 Copy (backup)</button>
+    <button class="ghost" onclick="clearAnswers()">Clear my answers</button>
+    <span class="saved" id="saved"></span>
+  </div>
+  <pre id="out"></pre>
+</div>
+
+<script>
+// ── Lesson 005 homework chunk — "George ha il singhiozzo", 2:34–3:09 (Peppa's three hiccup cures) ──
+// SHORTENED to ~35s / 4 lines (learner request 2026-06-28, v0.11: shorter chunks, more depth per blur).
+// Target this week: a pronoun glued to the BACK of an infinitive (farti) + the "devi + infinitive"
+// instruction pattern. boundaries taken from the auto-caption WORD-level timestamps.
+// (The rest of this scene — ricordarti / spaventarti / fargli, 3:09–3:55 — is the next chunk.)
+const DEFAULT_URL = 'https://www.youtube.com/watch?v=EVpd59Zb7P0';
+const DEFAULT_SCRIPT = [
+  '2:33.9-2:37.1  Conosco un modo migliore per farti passare il singhiozzo.',
+  '2:37.1-2:44.9  Prima di tutto devi saltare su e giù per tre volte con una gamba sola.',
+  '2:44.9-2:56.9  Adesso devi muovere le braccia su e giù in questo modo e tirare fuori la lingua, così.',
+  '2:56.9-3:09.4  E per finire devi chiudere gli occhi e girare velocemente su te stesso per almeno tre volte.'
+].join('\n');
+
+// namespace saved state per file, so pre-filled homework copies don't clobber the reusable sheet.
+// bump the version (v2→v3…) whenever DEFAULT_SCRIPT changes, so stale saved scripts don't mask it.
+const KEY = 'dictation-sheet-v4:' + location.pathname;
+let player = null, ytReady = false, pendingVideoId = null, currentVideoId = null;
+let currentRate = 1, activeEnd = null, watchTimer = null;
+let LINES = [];
+let MODE = 'script';   // 'script' = tutor-pasted lines · 'slices' = self-serve time slices
+
+const $ = id => document.getElementById(id);
+const val = id => $(id).value;
+
+// ── time helpers ──
+function toSec(t){
+  if(t==null) return null;
+  if(typeof t === 'number') return t;
+  const p = String(t).trim().split(':').map(Number);
+  if(!p.length || p.some(isNaN)) return null;
+  return p.reduce((a,n)=> a*60 + n, 0);
+}
+function fmt(sec){
+  if(sec==null) return '—';
+  sec = Math.round(sec); const m = Math.floor(sec/60), s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+function tokens(s){
+  return (s||'').toLowerCase().normalize('NFC').split(/\s+/)
+    .map(w => w.replace(/[^\p{L}\p{N}']/gu,'')).filter(Boolean);
+}
+function wordCount(s){ return tokens(s).length; }
+
+// ── parse the pasted script into {startSec,endSec,text} ──
+function parseScript(text){
+  const raw = (text||'').split(/\n/), out = [];
+  raw.forEach(line => {
+    const s = line.trim(); if(!s) return;
+    const T = '(\\d{1,2}:\\d{2}(?::\\d{2})?(?:\\.\\d+)?)';  // m:ss / h:mm:ss, optional .decimals
+    let m = s.match(new RegExp('^'+T+'\\s*[-–—~]\\s*'+T+'\\s+(.+)$'));
+    if(m){ out.push({startSec:toSec(m[1]), endSec:toSec(m[2]), text:m[3].trim()}); return; }
+    m = s.match(new RegExp('^'+T+'\\s+(.+)$'));
+    if(m){ out.push({startSec:toSec(m[1]), endSec:null, text:m[2].trim()}); return; }
+    out.push({startSec:null, endSec:null, text:s});
+  });
+  for(let i=0;i<out.length;i++){
+    if(out[i].endSec==null && out[i].startSec!=null){
+      const ns = (i+1<out.length) ? out[i+1].startSec : null;
+      out[i].endSec = ns!=null ? ns : out[i].startSec + 4;
+    }
+  }
+  return out;
+}
+
+// ── time-range boxes (mm / ss start → end), so the learner types only numbers ──
+function rangeSecs(){
+  const sm=+val('t-sm')||0, ss=+val('t-ss')||0, em=+val('t-em')||0, es=+val('t-es')||0;
+  return { start: sm*60+ss, end: em*60+es };
+}
+function rangeStr(){
+  const {start,end} = rangeSecs();
+  if(end<=start) return start>0 ? fmt(start)+'–(set end)' : '(whole clip)';
+  return fmt(start)+'–'+fmt(end);
+}
+function setRangeBoxes(start,end){
+  $('t-sm').value = Math.floor(start/60); $('t-ss').value = Math.round(start%60);
+  $('t-em').value = Math.floor(end/60);   $('t-es').value = Math.round(end%60);
+}
+// ── self-serve: slice the chosen range into evenly-timed practice lines (no script needed) ──
+function buildSlices(){
+  const id = getYouTubeId(val('url'));
+  if(!id){ flash('slicemsg','✗ paste the YouTube URL first', 3000); return; }
+  const {start,end} = rangeSecs();
+  if(end<=start){ flash('slicemsg','✗ set Start and End (End must be after Start)', 4000); return; }
+  let len = parseFloat(val('slice')); if(!(len>0)) len = 8;
+  const lines = [];
+  for(let t=start; t<end-0.05; t+=len){
+    lines.push({ startSec:t, endSec:Math.min(t+len, end), text:'', noText:true });
+  }
+  MODE = 'slices'; LINES = lines;
+  buildRows();
+  flash('slicemsg','✓ '+LINES.length+' slice'+(LINES.length===1?'':'s')+' of ~'+len+'s', 4000);
+  if(!player || currentVideoId !== id) loadVideo();
+  save();
+}
+
+function getYouTubeId(url){
+  try{
+    const u = new URL(url.trim());
+    if(u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('/')[0];
+    if(u.searchParams.get('v')) return u.searchParams.get('v');
+    const m = u.pathname.match(/\/(embed|shorts|live|v)\/([^/?#]+)/);
+    if(m) return m[2];
+  }catch(e){}
+  return null;
+}
+
+// ── render the per-line boxes ──
+function buildRows(){
+  const wrap = $('lines'); wrap.innerHTML = '';
+  if(!LINES.length){ wrap.innerHTML = '<div id="empty">No lines parsed — check the script format.</div>'; return; }
+  LINES.forEach((ln, i) => {
+    const wc = wordCount(ln.text);
+    const canPlay = ln.startSec!=null;
+    const noText = !!ln.noText;
+    const row = document.createElement('div'); row.className = 'lrow';
+    row.innerHTML =
+      '<div class="lnum">'+(i+1)+'</div>' +
+      '<div class="lmain">' +
+        '<div class="ltop">' +
+          '<button class="play mini" data-i="'+i+'"'+(canPlay?'':' disabled')+'>▶ '+(canPlay?fmt(ln.startSec):'—')+'</button>' +
+          (noText
+            ? '<span class="wc">'+fmt(ln.startSec)+'–'+fmt(ln.endSec)+'</span>'
+            : '<span class="wc">('+wc+' word'+(wc===1?'':'s')+')</span>' +
+              '<button class="reveal-btn mini" data-i="'+i+'">›reveal</button>') +
+        '</div>' +
+        '<input type="text" class="ans" data-i="'+i+'" placeholder="type what you hear…" autocomplete="off">' +
+        '<div class="answer" data-i="'+i+'"></div>' +
+      '</div>';
+    wrap.appendChild(row);
+  });
+  wrap.querySelectorAll('.play').forEach(b => { if(!b.disabled) b.addEventListener('click', () => playLine(+b.dataset.i)); });
+  wrap.querySelectorAll('.reveal-btn').forEach(b => b.addEventListener('click', () => toggleReveal(+b.dataset.i)));
+  wrap.querySelectorAll('.ans').forEach(inp => inp.addEventListener('input', save));
+}
+
+// ── word-level diff (LCS) ──
+function matchedMask(heard, actual){
+  const A = tokens(heard), B = tokens(actual);
+  const n=A.length, m=B.length;
+  const dp = Array.from({length:n+1}, ()=> new Array(m+1).fill(0));
+  for(let i=1;i<=n;i++) for(let j=1;j<=m;j++)
+    dp[i][j] = A[i-1]===B[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j], dp[i][j-1]);
+  const mask = new Array(m).fill(false);
+  let i=n, j=m;
+  while(i>0 && j>0){
+    if(A[i-1]===B[j-1]){ mask[j-1]=true; i--; j--; }
+    else if(dp[i-1][j] >= dp[i][j-1]) i--; else j--;
+  }
+  return mask;
+}
+function missedWords(heard, actual){
+  const disp = actual.split(/\s+/).filter(Boolean);
+  const norm = disp.map(w => w.replace(/[^\p{L}\p{N}']/gu,'').toLowerCase());
+  const mask = matchedMask(heard, actual);
+  const miss = []; let k = 0;
+  disp.forEach((w, idx) => { if(norm[idx]==='') return; if(!mask[k]) miss.push(disp[idx]); k++; });
+  return miss;
+}
+function escapeHtml(s){ return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function renderAnswer(i){
+  const box = document.querySelector('.answer[data-i="'+i+'"]');
+  const heard = (document.querySelector('.ans[data-i="'+i+'"]').value)||'';
+  const actual = LINES[i].text;
+  const disp = actual.split(/\s+/).filter(Boolean);
+  const norm = disp.map(w => w.replace(/[^\p{L}\p{N}']/gu,'').toLowerCase());
+  const mask = matchedMask(heard, actual);
+  const head = '<span class="tag">actual line · missed words in red</span>';
+  let k = 0;
+  const out = disp.map((w, idx) => {
+    if(norm[idx]==='') return '<span class="ok">'+escapeHtml(w)+'</span>';
+    const caught = mask[k]; k++;
+    return '<span class="'+(caught?'ok':'miss')+'">'+escapeHtml(w)+'</span>';
+  });
+  box.innerHTML = head + out.join(' ');
+}
+function toggleReveal(i){
+  const box = document.querySelector('.answer[data-i="'+i+'"]');
+  if(box.style.display === 'block'){ box.style.display = 'none'; return; }
+  renderAnswer(i); box.style.display = 'block';
+}
+
+// ── YouTube IFrame API ──
+window.onYouTubeIframeAPIReady = function(){
+  ytReady = true;
+  if(pendingVideoId){ createPlayer(pendingVideoId); pendingVideoId = null; }
+};
+function createPlayer(id){
+  currentVideoId = id;
+  $('playerwrap').style.display = 'block';
+  if(player){ player.cueVideoById(id); return; }
+  player = new YT.Player('player', {
+    videoId: id,
+    playerVars: { rel:0, playsinline:1, modestbranding:1 },
+    events: {
+      onReady: () => player.setPlaybackRate(currentRate),
+      onStateChange: onState,
+      onError: onPlayerError
+    }
+  });
+}
+function onPlayerError(ev){
+  // 101 / 150 = embedding disabled by the uploader; 2/5/100 = bad id / unavailable
+  const why = (ev && (ev.data===101 || ev.data===150))
+    ? 'This upload blocks embedding — open it directly on YouTube, or ask your tutor for a different upload of the same episode.'
+    : 'Video unavailable (check the URL).';
+  flash('reqmsg', '✗ ' + why, 8000);
+}
+function loadVideo(){
+  const id = getYouTubeId(val('url'));
+  if(!id){ flash('reqmsg','✗ couldn\'t read a video id from that URL', 3000); return; }
+  if(!ytReady){ pendingVideoId = id; return; }
+  createPlayer(id); save();
+}
+function onState(ev){ if(ev.data === YT.PlayerState.PLAYING) startWatch(); }
+function startWatch(){
+  clearInterval(watchTimer);
+  watchTimer = setInterval(() => {
+    if(activeEnd != null && player && player.getCurrentTime() >= activeEnd){
+      player.pauseVideo(); activeEnd = null; clearInterval(watchTimer);
+    }
+  }, 100);
+}
+// ASR word times lag the real onset and crowd fast lines, so play a touch early and stop a touch late
+// — for dictation it's far worse to clip your own word than to hear a sliver of the neighbour.
+const LEAD = 0.20, TAIL = 0.40;
+function playSeg(s, e){
+  if(!player || currentVideoId == null){ flash('reqmsg','▸ press “Load video” first', 2500); return; }
+  player.setPlaybackRate(currentRate);
+  player.seekTo(Math.max(0, s - LEAD), true); player.playVideo();
+  activeEnd = (e!=null) ? e + TAIL : null;
+}
+function playLine(i){ const ln = LINES[i]; if(ln.startSec!=null) playSeg(ln.startSec, ln.endSec); }
+function playChunk(){
+  if(!LINES.length) return;
+  const s = LINES[0].startSec, e = LINES[LINES.length-1].endSec;
+  if(s!=null) playSeg(s, e);
+}
+function setRate(r){
+  currentRate = r;
+  if(player) player.setPlaybackRate(r);
+  $('sp-slow').classList.toggle('on', r===0.75);
+  $('sp-norm').classList.toggle('on', r===1);
+  save();
+}
+
+// ── persistence ──
+const answers = () => [...document.querySelectorAll('.ans')].map(i => i.value);
+function save(){
+  localStorage.setItem(KEY, JSON.stringify({
+    url: val('url'),
+    sm: val('t-sm'), ss: val('t-ss'), em: val('t-em'), es: val('t-es'),
+    slice: val('slice'), mode: MODE, script: val('script'),
+    answers: answers(), rate: currentRate
+  }));
+  flash('saved','✓ saved', 1000);
+}
+function flash(id, msg, ms){ const el=$(id); el.textContent=msg; clearTimeout(el._t); el._t=setTimeout(()=> el.textContent='', ms||1500); }
+
+function buildFromInputs(){
+  MODE = 'script';
+  LINES = parseScript(val('script'));
+  buildRows();
+  flash('buildmsg','✓ '+LINES.length+' line'+(LINES.length===1?'':'s')+' built', 2000);
+  save();
+}
+function resetExample(){
+  if(!confirm('Reset the URL + script back to the built-in example clip?')) return;
+  $('url').value = DEFAULT_URL; setRangeBoxes(153, 189); $('slice').value = '8'; $('script').value = DEFAULT_SCRIPT;
+  document.querySelectorAll('.ans').forEach(i => i.value='');
+  buildFromInputs(); loadVideo();
+}
+
+function clearAnswers(){
+  if(!confirm('Clear all your typed answers?')) return;
+  document.querySelectorAll('.ans').forEach(i => i.value='');
+  document.querySelectorAll('.answer').forEach(b => b.style.display='none');
+  save();
+}
+
+// ── hand-off ──
+// Tutor downloads carry a UNIQUE, self-describing, sortable name so the browser never has to
+// add "(1)","(2)"… to a duplicate — that collision is what hid which file was newest (v0.9.2).
+// Shape: <kind>_<videoId>_<range>_<YYYY-MM-DD-HHMM>.md , plus a self-identifying header line
+// inside the file so it stays identifiable even if it's renamed.
+function stamp(){                                   // sortable local time → 2026-06-28-1453
+  const d = new Date(), p = n => String(n).padStart(2,'0');
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes());
+}
+function slugRange(){                               // "1:00–2:00" → "1m00-2m00" (filename-safe)
+  return rangeStr().replace(/:/g,'m').replace(/[–—]/g,'-').replace(/[^0-9A-Za-z._-]/g,'') || 'clip';
+}
+function handoffName(kind){
+  return kind+'_'+(getYouTubeId(val('url'))||'video')+'_'+slugRange()+'_'+stamp()+'.md';
+}
+function header(){                                  // first line — survives a rename
+  return '<!-- saved '+stamp()+' · video '+(getYouTubeId(val('url'))||'(unknown)')+' · range '+rangeStr()+' -->\n\n';
+}
+function saveFile(text, name){
+  const blob = new Blob([text], {type:'text/markdown;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=> URL.revokeObjectURL(url), 1500);
+}
+function requestScript(){
+  const u = val('url').trim();
+  if(!u){ flash('reqmsg','✗ paste the YouTube URL first', 3000); return; }
+  const s = header() + '**Dictation request**\n- video: ' + u + '\n- range: ' + rangeStr() + '\n';
+  const name = handoffName('dictation-request');
+  saveFile(s, name);
+  flash('reqmsg','✓ saved ' + name + ' — tell your tutor the URL + range', 6000);
+}
+function buildSummary(){
+  const free = LINES.some(l => l.noText);
+  let s = '';
+  s += '**YouTube:** ' + (val('url')||'(none)') + '\n';
+  s += '**Range:** ' + rangeStr() + '\n';
+  if(free) s += '_(Self-serve slices — tutor: pull the Italian subs for this range and mark the diff.)_\n';
+  s += '\n**Per-line dictation (heard → actual):**\n';
+  let totMiss=0, totWords=0;
+  LINES.forEach((ln, i) => {
+    const heard = (document.querySelector('.ans[data-i="'+i+'"]')?.value)||'';
+    if(ln.noText){
+      s += (i+1) + '. [' + fmt(ln.startSec) + '–' + fmt(ln.endSec) + ']\n';
+      s += '   heard:  ' + (heard.trim() || '(blank)') + '\n';
+      s += '   actual: (tutor to fill from subtitles)\n';
+      return;
+    }
+    const miss = heard.trim() ? missedWords(heard, ln.text) : tokens(ln.text);
+    totMiss += miss.length; totWords += wordCount(ln.text);
+    s += (i+1) + '. [' + fmt(ln.startSec) + ']\n';
+    s += '   heard:  ' + (heard.trim() || '(blank)') + '\n';
+    s += '   actual: ' + ln.text + '\n';
+    s += '   missed: ' + (miss.length ? miss.join(', ') : '— none —') + '\n';
+  });
+  if(totWords>0) s += '\n**Caught:** ' + (totWords-totMiss) + ' / ' + totWords + ' words by ear\n';
+  return s;
+}
+function showOut(s){ const o=$('out'); o.textContent=s; o.style.display='block'; }
+function download(){
+  if(!LINES.length){ flash('saved','build the sheet first', 2500); return; }
+  const body = buildSummary(); showOut(body);
+  const name = handoffName('peppa-dictation');
+  saveFile(header() + body, name);
+  flash('saved','✓ saved ' + name + ' to Downloads — tell your tutor “done”', 6000);
+}
+function generate(){
+  if(!LINES.length){ flash('saved','build the sheet first', 2500); return; }
+  const s = buildSummary(); showOut(s);
+  navigator.clipboard.writeText(s).then(()=> flash('saved','✓ copied', 2500), ()=>{});
+}
+
+// ── boot ──
+(function init(){
+  const raw = localStorage.getItem(KEY);
+  let d = null; try{ d = raw ? JSON.parse(raw) : null; }catch(e){}
+  $('url').value    = (d && d.url)    || DEFAULT_URL;
+  if(d && d.sm!=null){ $('t-sm').value=d.sm; $('t-ss').value=d.ss; $('t-em').value=d.em; $('t-es').value=d.es; }
+  else setRangeBoxes(153, 189);
+  $('slice').value  = (d && d.slice) || '8';
+  $('script').value = (d && d.script) || DEFAULT_SCRIPT;
+  ['url','t-sm','t-ss','t-em','t-es','slice','script'].forEach(id => { const el=$(id); if(el) el.addEventListener('input', save); });
+  if(d && d.rate) setRate(d.rate);
+  if(d && d.mode==='slices') buildSlices(); else buildFromInputs();
+  if(d && d.answers) d.answers.forEach((v,i)=>{ const el=document.querySelector('.ans[data-i="'+i+'"]'); if(el) el.value=v; });
+  loadVideo();
+  const tag = document.createElement('script'); tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+})();
+</script>
+</body>
+</html>
