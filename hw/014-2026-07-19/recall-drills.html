@@ -25,7 +25,7 @@
             { id, prompt, opts:[...], a:"correct" }       → multiple choice
             { id, audio:"Italian…", who?, prompt/q, ... } → TTS (needs card.tts)
 ============================================================================= -->
-<title>Recall drills — L009</title>
+<title>Sheet</title>
 <style>
   :root{
     --bg:#f5f3ee; --card:#ffffff; --ink:#26241f; --muted:#8a8478;
@@ -116,52 +116,28 @@
 <script>
 /* ============================== CONFIG (edit this only) ============================== */
 const CONFIG = {
-  title: "Recall drills 🧠 — Lesson 009 (2026-07-05)",
-  subtitle: "Tonight’s practice — only things we WORKED today, so this is all recall (no surprises). Do them anytime before next class, then ⬇ Save for tutor. The listening section at the end is the important one — it trains your real goal: understanding what someone says back to you.",
-  storageKey: "l009-recall-v1",
-  pasteHeading: "Recall drills — L009 (2026-07-05):",
+  title: "Recall drills 🎯 — L014 (2026-07-19)",
+  subtitle: "4 items — review only, everything here was graded live today. Anki day, so kept short.",
+  storageKey: "l014-recall-v1",
+  pasteHeading: "My answers — Recall drills L014 (2026-07-19):",
   progressive: false,
   remark: true,
-  map: [],
   cards: [
-    { tag:"G · would/will", title:"The verbs that SHRINK (kill “andrerei”)",
-      explain:'A few common verbs contract the stem, then take just <b>-ei / -ai</b> — you do <u>not</u> add “-erei” on top. <i>andare→<b>andr</b>ei · venire→<b>verr</b>ei · avere→<b>avr</b>ei · essere→<b>sar</b>ei · fare→<b>far</b>ei.</i>',
+    { tag:"📐 grammar · G-009", title:"avere — one more trigger word",
       items:[
-        { id:"c1a", prompt:'“I would go” (<i>andare</i>) → ___  <span class="heard">(spell all 6 letters: a-n-d-r-e-i)</span>' },
-        { id:"c1b", prompt:'“I would come” (<i>venire</i>) → ___' },
-        { id:"c1c", prompt:'“You’ll get the hiccups.” (venire → verr- + à) → Ti ___ il singhiozzo.' },
-        { id:"c1d", prompt:'“If I had time, I would go to the park.” → Se avessi tempo, ___ al parco.' },
+        { id:"r1", prompt:'Se (lui) ___ (avere) più tempo, viaggerebbe di più. <i>("If he had more time, he\'d travel more" — which trigger, which stem?)</i>' },
       ] },
-    { tag:"G · imperfetto", title:"The hidden-stem imperfetto (from warm-up)",
-      explain:'These keep a fuller stem, <u>then</u> add <i>-evo</i>: <b>fac-evo · dic-evo · bev-evo</b>. (Careful: <i>bevo</i> = present “I drink”; “I used to drink” = <b>bevevo</b>.)',
+    { tag:"📐 grammar · G-017", title:"dovere — the noi-person",
       items:[
-        { id:"c2a", prompt:'<i>fare</i> → io ___ (I used to do)' },
-        { id:"c2b", prompt:'<i>dire</i> → io ___ (I used to say)' },
-        { id:"c2c", prompt:'<i>bere</i> → io ___ (I used to drink)' },
+        { id:"r2", prompt:'Quest\'estate (noi) ___ (dovere) risparmiare di più. <i>("This summer we\'ll have to save more")</i>' },
       ] },
-    { tag:"reflexive", title:"Keep the reflexive “mi” warm",
-      explain:'The reflexive pronoun for <b>io</b> is always <b>mi</b> (not “lo”, not “mio”): <i>mi sveglio, mi alzo, mi lavo</i>. Past = <b>essere</b> + agreement: <i>mi sono svegliat<b>o</b></i>.',
+    { tag:"👂 ear · S-001", title:"non vedere l'ora — one more, no clitic this time", tts:true,
       items:[
-        { id:"c3a", prompt:'Your morning: “I wake up at seven, I get up, and I wash.” → ___' },
-        { id:"c3b", prompt:'“I woke up late this morning.” (past, you = m.) → ___' },
-        { id:"c3c", prompt:'Fill the pronoun: io ___ alzo · tu ___ alzi · noi ___ alziamo → ___ / ___ / ___' },
+        { id:"r3", audio:"Non vedo l'ora delle vacanze!", q:'Translate the meaning:' },
       ] },
-    { tag:"V · re-drill", title:"Three you paused on today",
-      explain:'Quick fixes from the warm-up.',
+    { tag:"B · comeback", title:"Handle the comeback",
       items:[
-        { id:"c4a", prompt:'“It disappeared.” (<i>sparire</i> — which auxiliary + agreement?) → È ___' },
-        { id:"c4b", prompt:'<i>per bene</i> → ___ (English)' },
-        { id:"c4c", prompt:'“Come on! / You can do it!” (one word — watch the vowel: it’s an <b>o</b>) → ___' },
-      ] },
-    { tag:"🎧 A/B · listen", title:"Capisci? + handle the comeback", tts:true,
-      explain:'Tap ▶ Lento first, then ▶ Normale. For A, pick the meaning. For B, someone is talking to YOU — type the reply you’d actually say.',
-      items:[
-        { id:"c5a", audio:"Se bevi troppo in fretta, ti verrà il singhiozzo.", q:"What’s the warning?",
-          opts:["If you drink slowly, nothing happens","If you drink too fast, you’ll get the hiccups","You already have the hiccups — stop drinking"], a:"If you drink too fast, you’ll get the hiccups" },
-        { id:"c5b", audio:"Mi sono svegliato tardi e ho perso l’autobus.", q:"What happened?",
-          opts:["He went to bed late","He woke up early and caught the bus","He woke up late and missed the bus"], a:"He woke up late and missed the bus" },
-        { id:"c5c", audio:"A che ora ti svegli di solito?", who:"a parent at the school gate asks you", q:"Type your reply:" },
-        { id:"c5d", audio:"Vieni al parco con noi domani?", who:"another parent invites you", q:"Type your reply (a full sentence):" },
+        { id:"r4", prompt:'The teacher asks: <i>"Cosa farete durante l\'estate?"</i> — type the reply you\'d actually give.' },
       ] },
   ],
 };
