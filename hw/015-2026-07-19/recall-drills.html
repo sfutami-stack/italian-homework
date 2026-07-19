@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Recall Drills — L013</title>
+<title>Recall Drills — L015</title>
 <style>
   :root{
     --bg:#f5f3ee; --card:#ffffff; --ink:#26241f; --muted:#8a8478;
@@ -93,29 +93,29 @@
 <script>
 /* ============================== CONFIG (edit this only) ============================== */
 const CONFIG = {
-  title: "Recall drills 🏠 — L013 (2026-07-18)",
-  subtitle: "Short today (Anki days keep drills ≤5 items) — three fresh transfers on today's re-taught misses, plus one real-life comeback. Everything here was worked live today; nothing new. Paste your answers back next session.",
-  storageKey: "l013-recall-v1",
-  pasteHeading: "My answers — Recall drills L013 (2026-07-18):",
+  title: "Recall Drills 🌙 — L015 (2026-07-19)",
+  subtitle: "Anki-day cap (≤5) — production + comeback only, everything below traces to something graded live today. Two repeat misses get one more cold pass, one congiuntivo generalization check, and a TTS comprehension + comeback pair.",
+  storageKey: "l015-recall-v1",
+  pasteHeading: "My answers — Recall Drills L015 (2026-07-19):",
   progressive: false,
   remark: true,
-  map: [],
+  map: [
+    { ic:"🔁", area:"2 repeat misses", what:"dovere's mood (dovremo family), the -erei spelling", why:"both slipped twice today — one more cold check before they go back to Box 1" },
+    { ic:"🤞", area:"congiuntivo, a 3rd trigger", what:"credo che + essere", why:"today drilled sono contento che / spero che — check it generalizes" },
+    { ic:"👂", area:"comprehension + comeback", what:"a new TTS line about the girls staying in touch", why:"North Star: understanding what they say back" },
+  ],
   cards: [
-    { tag:"📐 grammar · G-009", title:"avere — one more transfer",
+    { tag:"📐 grammar", title:"Two from today, one more cold pass",
       items:[
-        { id:"r1", prompt:'Se io ___ (avere) una macchina, ti porterei in centro. ("If I had a car…" — which stem, which person?)' },
+        { id:"d1", prompt:'Fill: Voi due ___ (dovere) uscire presto domani. <i>(plain future fact — mind the single/double m)</i>' },
+        { id:"d2", prompt:'Fill: Se vincessi alla lotteria, ___ (viaggiare) per il mondo. <i>(keep the hard sound — no extra i)</i>' },
+        { id:"d3", prompt:'Fill: Credo che le bambine ___ (essere) già amiche per la vita. <i>(a new trigger, same congiuntivo as today)</i>' },
       ] },
-    { tag:"📚 vocab · V-008", title:"andare d'accordo — one more transfer",
+    { tag:"👂 ear + 💬 comeback", title:"Listen, then handle the reply", tts:true,
       items:[
-        { id:"r2", prompt:'I miei genitori ___ (andare d\'accordo) subito con i vicini. ("My parents got along right away with the neighbors")' },
-      ] },
-    { tag:"📚 vocab · V-009", title:"diventare — one more transfer",
-      items:[
-        { id:"r3", prompt:'Il tempo è ___ (diventare) brutto. ("The weather became bad" — masc. sing.)' },
-      ] },
-    { tag:"B · comeback", title:"Handle the comeback",
-      items:[
-        { id:"r4", who:"a neighbor asks you", prompt:'<i>Com\'è andata la giornata?</i> — type the reply you\'d actually give.' },
+        { id:"d4", audio:"I genitori sperano che i bambini vadano d'accordo.", q:"What do the parents hope?",
+          opts:["That the kids get along","That the kids do their homework","That the kids go home early"], a:"That the kids get along" },
+        { id:"d5", audio:"E voi, sperate che restino in contatto?", who:"the other parent asks you", q:"Type your reply:" },
       ] },
   ],
 };
@@ -209,11 +209,23 @@ function cardText(ci){
     s+='      → '+(getAns(it)||'(blank)')+'\n'; });
   return s;
 }
-function clip(text,msg,el){ navigator.clipboard.writeText(text).then(()=>{ if(el) el.textContent=msg; },()=>{ if(el) el.textContent='(copy failed — select the box)'; }); }
+function legacyCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px'; ta.style.top='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  let ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+  document.body.removeChild(ta); return ok;
+}
+function clip(text,msg,el){
+  const fail=()=>{ if(legacyCopy(text)){ if(el) el.textContent=msg; } else if(el) el.textContent='(clipboard blocked — text is in the box below, select & copy it)'; };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>{ if(el) el.textContent=msg; }, fail); }
+  else fail();
+}
 function copyCard(ci){ let s=(CONFIG.pasteHeading||'My answers:')+'\n\n'+cardText(ci);
   const note=(($('remark')||{}).value||'').trim();
   if(note || ci===CARDS.length-1) s+='\n[📝 Note to tutor]\n  '+(note||'(none)')+'\n';
-  clip(s,'✓ copied — paste this section to me',$('cm-'+ci)); }
+  $('out').textContent=s; $('out').style.display='block';
+  clip(s,'✓ copied — paste this section to me',$('cm-'+ci)); $('out').scrollIntoView({behavior:'smooth',block:'nearest'}); }
 function buildHandoff(){
   let s=(CONFIG.pasteHeading||'My answers:')+'\n'; CARDS.forEach((c,ci)=> s+='\n'+cardText(ci));
   s+='\n[📝 Note to tutor]\n  '+(($('remark')||{}).value||'(none)')+'\n';
@@ -259,7 +271,16 @@ function clearAll(){ if(!confirm('Clear all your answers?')) return; localStorag
   allItems().forEach(it=>{ if(it.opts){ document.querySelectorAll('input[name="'+it.id+'"]').forEach(r=>r.checked=false); } else { const el=$(it.id); if(el) el.value=''; } });
   const r=$('remark'); if(r) r.value=''; $('out').style.display='none'; updateProg(); }
 
-render(); load(); document.querySelectorAll('.growbox').forEach(autoGrow); updateProg();
+function unlockProgress(){
+  if(!CONFIG.progressive) return;
+  for(let ci=1; ci<CARDS.length; ci++){
+    const prevDone = CARDS[ci-1].items.every(it=> !!getAns(it));
+    if(!prevDone) break;
+    const el=$('card-'+ci); if(el) el.classList.remove('locked');
+    const btn=document.querySelector('[data-cont="'+(ci-1)+'"]'); if(btn) btn.classList.add('done');
+  }
+}
+render(); load(); unlockProgress(); document.querySelectorAll('.growbox').forEach(autoGrow); updateProg();
 </script>
 <div style="color:#c4bfb2;font-size:11px;text-align:center;padding:8px 0">build 2026-07-19-1642</div></body>
 </html>
