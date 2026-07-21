@@ -20,7 +20,11 @@
   th{color:var(--muted); font-weight:700; font-size:12.5px; text-transform:uppercase; letter-spacing:.3px}
   td.stem{font-weight:700; color:var(--accent)}
   tr.trigger td{background:var(--accent-soft); font-weight:600}
-  .verbtable{overflow-x:auto}
+  .verbtable{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  /* paradigm cells never wrap mid-word — the wrapper scrolls sideways instead (iPhone fix, 2026-07-21) */
+  .verbtable th, .verbtable td{white-space:nowrap}
+  .verbtable table.prose{min-width:560px}
+  .verbtable table.prose th, .verbtable table.prose td{white-space:normal}
   code{background:#efece4; border-radius:6px; padding:1px 6px; font-size:13px}
   .persons{font-size:12.5px; color:var(--muted)}
   .jump{display:flex; flex-wrap:wrap; gap:7px; margin:0 0 20px}
@@ -42,12 +46,12 @@
   <div class="card" id="trigger">
     <h2>The 3-way decision — pick the stem by the TRIGGER WORD</h2>
     <div class="rule">Same verb, three different shrunk stems depending on what introduces the clause. Read the trigger, not the meaning you're aiming for — the trigger tells you everything.</div>
-    <table>
+    <div class="verbtable"><table class="prose">
       <tr><th>Trigger word(s)</th><th>Mood/tense</th><th>Ending family</th><th>Example (avere)</th></tr>
       <tr class="trigger"><td><code>domani, quando, fra un'ora…</code> (or plain future/"would")</td><td>Futuro / Condizionale</td><td>-ò -ai -à -emo -ete -anno<br><span class="persons">(cond: -ei -esti -ebbe -emmo -este -ebbero)</span></td><td class="stem">avr-</td></tr>
       <tr class="trigger"><td><code>se</code> (a real "if")</td><td>Congiuntivo imperfetto</td><td>-essi -essi -esse -essimo -este -essero</td><td class="stem">avess-</td></tr>
       <tr class="trigger"><td><code>penso/spero/credo/voglio che…</code></td><td>Congiuntivo presente</td><td>-ia -ia -ia -iamo -iate -iano</td><td class="stem">abbi-</td></tr>
-    </table>
+    </table></div>
   </div>
 
   <div class="card" id="family">
@@ -184,5 +188,5 @@
     <div class="rule" style="margin:14px 0 0">Same pattern for <i>alzarsi, divertirsi, chiamarsi, lavarsi, sbrigarsi, ricordarsi, sedersi, trasferirsi</i> — swap in the verb's normal ending, keep the clitic row above. Real, solid win on record: the <i>io</i>-clitic <b>mi</b> used to slip to "lo/mio sveglio" — now automatic.</div>
   </div>
 </div>
-<div style="color:#c4bfb2;font-size:11px;text-align:center;padding:8px 0">build 2026-07-21-1457</div></body>
+<div style="color:#c4bfb2;font-size:11px;text-align:center;padding:8px 0">build 2026-07-21-1502</div></body>
 </html>
