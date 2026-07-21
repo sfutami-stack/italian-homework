@@ -3,20 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Graduation Probe — S1E1-B (three-cures)</title>
+<title>Graduation Probe — Muddy Puddles chunk 1</title>
 <!--
-  GRADUATION PROBE (v0.19 chunk lifecycle, GRADUATE step). Chunk under test: S1E1-B three-cures
-  2:33–3:09, coached 2026-06-29 (L006), in AUTOMATIZE via the Anki Ear Deck since 2026-07-08.
-  These 2 lines are HELD OUT: never dictated, never coached as a full graded item, never in the
-  Anki registry — real S1E1 audio, sitting in the narrow narration gap between B's chunk end
-  (3:09) and C's chunk start (3:14): "Anche l'altro rimedio di Peppa non ha funzionato. George ha
-  ancora il singhiozzo." Reuses B's core vocab (rimedio V-007, funzionare-negation, singhiozzo,
-  ancora) and its failed-cure narrative pattern, in a fresh frame.
-  Honesty note (P6): only 2 held-out lines were findable — S1E1's dialogue in this stretch is
-  densely mined (A/B/C intakes are contiguous 1:35–3:34 with almost no gap), so this is thinner
-  than the ideal 2–3 lines and the countable-word count is low (~12). Same retrofit caveat as the
-  S1E1-A probe: no lines were reserved at B's original 2026-06-29 intake (the probe template
-  didn't exist yet). Weight the result accordingly when scoring.
+  GRADUATION PROBE (v0.19 chunk lifecycle, GRADUATE step). Chunk under test: Muddy Puddles chunk 1
+  (0:28-0:55.4, video nZ1vwTBuw4M), coached 2026-07-08 (L010) — pre-v0.19, so no lines were
+  reserved at the original intake (same retrofit situation as the S1E1-A/B probes). In AUTOMATIZE
+  via the Anki Ear Deck since.
+  These 3 lines are HELD OUT: never dictated, never coached, never in the Anki registry — real
+  Muddy Puddles audio from later in the same episode/scene, reusing chunk 1's coached vocab
+  (saltare nelle pozzanghere di fango — V-011/S-008) in fresh frames, plus two already-solid deck
+  skills combined in a new way (stare+gerundio G-005, reflexive past G-015 in its voi-form).
+  Deliberately does NOT touch the chunk-2 pre-taught glossary (G-018 real-conditional, V-012
+  piacere) — that material is reserved for chunk 2's actual intake coaching, not spent here.
+  Honesty note (P6): "capito" (in "ho capito") has never been formally taught as vocab — excluded
+  from scoring alongside the proper names. 3 lines were findable this time (fuller than the
+  S1E1-B probe's 2), reusing well-established grammar in genuinely fresh sentences never heard as
+  homework before.
 -->
 <style>
   :root{
@@ -70,7 +72,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Graduation Probe 🎓 — S1E1-B "three-cures"</h1>
+  <h1>Graduation Probe 🎓 — Muddy Puddles chunk 1</h1>
   <div class="sub">Held-out lines · real episode audio · never seen before</div>
 
   <div class="serverwarn">
@@ -79,9 +81,9 @@
   </div>
 
   <div class="lens">
-    <b>This is a real check, not practice.</b> Two lines from the episode you haven't heard as
-    homework before — they sit right between the "three cures" chunk and the "scare" chunk. Type
-    what you hear — no glossary, no reveal until you're done. Each line's ▶ replay works up to
+    <b>This is a real check, not practice.</b> Three lines from later in the same episode/scene
+    you haven't heard as homework before. Type what you hear — no glossary, no reveal until
+    you're done. Each line's ▶ replay works up to
     <b>2 times</b>, then it locks. When you've typed both, press <b>⬇ Save for tutor</b> — that's
     what unlocks ›reveal so you can see how you did.
   </div>
@@ -111,19 +113,20 @@
 </div>
 
 <script>
-// ── the 2 held-out lines (fixed — not editable in this probe) ──
-const DEFAULT_URL = 'https://www.youtube.com/watch?v=EVpd59Zb7P0';
+// ── the 3 held-out lines (fixed — not editable in this probe) ──
+const DEFAULT_URL = 'https://www.youtube.com/watch?v=nZ1vwTBuw4M';
 const DEFAULT_SCRIPT = [
-  '3:08.44-3:11.30  Anche l\'altro rimedio di Peppa non ha funzionato.',
-  '3:11.30-3:14.00  George ha ancora il singhiozzo.'
+  '0:55.3-0:58.0    Io amo saltare nelle pozzanghere.',
+  '1:52.5-1:55.3    Peppa e George si stanno divertendo molto.',
+  '3:26.9-3:31.2    Ho capito. Vi siete divertiti a saltare nelle pozzanghere di fango?'
 ].join('\n');
 const MAX_PLAYS = 2;
 const TUTOR_SAVE_URL = 'https://script.google.com/macros/s/AKfycby88gFnMprMuBLTwUdZmPSdSM7o-BweDZvtf95_YaB6fvderXbhh0uLXKSbagsbNDHbXw/exec';
-// proper names/vocatives excluded from scoring — capped at one exclusion per name per chunk
-const PROPER_NOUNS = ['george'];
+// proper names + never-formally-taught content words excluded from scoring — capped at one exclusion per word per chunk
+const PROPER_NOUNS = ['peppa','george','capito'];
 const BAR = 0.70;
 
-const KEY = 'graduation-probe-s1e1-b:' + location.pathname;
+const KEY = 'graduation-probe-muddy-1:' + location.pathname;
 let player = null, ytReady = false, pendingVideoId = null, currentVideoId = null;
 let currentRate = 1, activeEnd = null, watchTimer = null;
 let LINES = [];
@@ -355,7 +358,7 @@ function saveHandoff(text, name, msgId){
 }
 function buildSummary(){
   let s = '';
-  s += '**GRADUATION PROBE — S1E1-B three-cures — held-out lines**\n';
+  s += '**GRADUATION PROBE — Muddy Puddles chunk 1 — held-out lines**\n';
   s += '**YouTube:** ' + DEFAULT_URL + '\n\n';
   s += '**Per-line (heard → actual, plays used):**\n';
   let totMiss=0, totWords=0;
@@ -372,10 +375,9 @@ function buildSummary(){
   const missAllowed = Math.floor((1 - BAR) * countable);
   s += '\n**Scoring inputs (tutor applies phonological-match leniency by hand before the final verdict):**\n';
   s += '- Raw words caught: ' + (totWords-totMiss) + ' / ' + totWords + '\n';
-  s += '- Countable words (excl. proper names, max 1/name/chunk — "George" excluded once): ' + countable + '\n';
+  s += '- Countable words (excl. proper names + "capito", max 1/word/chunk): ' + countable + '\n';
   s += '- Bar: ' + Math.round(BAR*100) + '% → misses allowed ≤ ' + missAllowed + '\n';
   s += '- Phonological-match rule NOT yet applied here: silent-h, single/double-consonant, and accent-only slips are not misses (accent-only = half-miss) — re-score the raw miss list by hand against this rule before ruling pass/fail.\n';
-  s += '- Honesty caveat: only 2 held-out lines existed in this stretch (S1E1 is densely mined here) — thinner than the ideal 2-3; weight accordingly.\n';
   const rmk = ($('remark') && $('remark').value || '').trim();
   if(rmk) s += '\n**📝 Note to tutor:** ' + rmk + '\n';
   return s;
@@ -383,7 +385,7 @@ function buildSummary(){
 function showOut(s){ const o=$('out'); o.textContent=s; o.style.display='block'; }
 function finish(){
   const body = buildSummary(); showOut(body);
-  const name = 'graduation-probe_S1E1-B_EVpd59Zb7P0_' + stamp() + '.md';
+  const name = 'graduation-probe_Muddy-1_nZ1vwTBuw4M_' + stamp() + '.md';
   saveHandoff(body, name, 'saved');
   saved = true;
   unlockReveals();
