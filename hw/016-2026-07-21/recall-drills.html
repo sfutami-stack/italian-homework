@@ -3,7 +3,29 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Recall Drills — L013</title>
+<!-- ============================================================================
+  _sheet-base.html  —  SHARED ENGINE for warm-ups, worksheets, and recall drills.
+  (v0.17, 2026-07-04.) The single scaffold the per-session sheets COPY from, so
+  the map · the 📝 remark field · the TTS section · per-card gating · the
+  ⬇ Save-for-tutor button are a copy-from-template FACT, not something the
+  tutor must remember (principle P4).
+
+  HOW TO MAKE A SESSION SHEET:
+    1. Copy this file to lessons/NNN-YYYY-MM-DD/<warmup|worksheet>.html
+       (or homework/recall-drills.html).
+    2. Edit ONLY the CONFIG block below (title, map, cards, flags). Nothing else.
+    3. Set CONFIG.progressive=true for the in-session worksheet (card-by-card,
+       enforces P2: each card has "📋 Copy this section → continue" which copies
+       THAT card and unlocks the next — so the learner pastes per section and the
+       tutor checks per section, never a wall). Leave false for warm-ups/drills.
+
+  CARD/ITEM CONTRACT (see the DEMO CONFIG):
+    card  = { tag, title, explain(HTML, optional), tts(bool, optional), items[] }
+    item  = { id, prompt(HTML) }                         → text input
+            { id, prompt, opts:[...], a:"correct" }       → multiple choice
+            { id, audio:"Italian…", who?, prompt/q, ... } → TTS (needs card.tts)
+============================================================================= -->
+<title>Sheet</title>
 <style>
   :root{
     --bg:#f5f3ee; --card:#ffffff; --ink:#26241f; --muted:#8a8478;
@@ -51,6 +73,7 @@
   .opts input{accent-color:var(--accent)}
   input[type=text]{width:100%; border:1px solid var(--line); border-radius:9px; padding:9px 11px; font:inherit; color:var(--ink); background:#fdfcf9;}
   input[type=text]:focus{outline:none; border-color:var(--accent)}
+  /* v0.18: answer boxes WRAP + auto-grow so a long answer is never cut off (learner request ×2, 2026-07-05) */
   .growbox{width:100%; border:1px solid var(--line); border-radius:9px; padding:9px 11px; font:inherit; line-height:1.5;
     color:var(--ink); background:#fdfcf9; resize:none; overflow:hidden; min-height:42px; display:block; white-space:pre-wrap; word-break:break-word;}
   .growbox:focus{outline:none; border-color:var(--accent)}
@@ -93,34 +116,43 @@
 <script>
 /* ============================== CONFIG (edit this only) ============================== */
 const CONFIG = {
-  title: "Recall drills 🏠 — L013 (2026-07-18)",
-  subtitle: "Short today (Anki days keep drills ≤5 items) — three fresh transfers on today's re-taught misses, plus one real-life comeback. Everything here was worked live today; nothing new. Paste your answers back next session.",
-  storageKey: "l013-recall-v1",
-  pasteHeading: "My answers — Recall drills L013 (2026-07-18):",
+  title: "Recall Drills 🏠 — L016 (2026-07-21)",
+  subtitle: "5 items, Anki-day cap. Two retries on today's real misses (V-017/V-018), one more congiuntivo generalization check with a new verb, a quick dovere-spelling check, and a comeback continuing today's Puglia/Sardinia thread. Everything here was taught/graded today or earlier — review only.",
+  storageKey: "l016-recall-drills-v1",
+  pasteHeading: "My answers — Recall Drills L016 (2026-07-21):",
   progressive: false,
   remark: true,
   map: [],
   cards: [
-    { tag:"📐 grammar · G-009", title:"avere — one more transfer",
+    { tag:"🗣️ V-017/018", title:"Survival frames — retry",
+      explain:'Both slipped in cold retries today after real spontaneous use on 07-19. Re-anchoring the fixed phrases as whole units.',
       items:[
-        { id:"r1", prompt:'Se io ___ (avere) una macchina, ti porterei in centro. ("If I had a car…" — which stem, which person?)' },
+        { id:"h1", prompt:'You\'re mid-sentence talking to your daughter and the word disappears. Say the whole fixed phrase (watch: singular, and don\'t drop the "to me" part).' },
+        { id:"h2", prompt:'Your daughter asks you something tricky in Italian and you want to declare, out loud, that YOU\'ll give it a try. Say it.' },
       ] },
-    { tag:"📚 vocab · V-008", title:"andare d'accordo — one more transfer",
+    { tag:"📐 G-002", title:"congiuntivo — one more new verb",
+      explain:'Same generalization check, a verb you haven\'t used this way before: <b>venire</b> (irregular subjunctive: venga/venga/venga/veniamo/<b>veniate</b>/vengano).',
       items:[
-        { id:"r2", prompt:'I miei genitori ___ (andare d\'accordo) subito con i vicini. ("My parents got along right away with the neighbors")' },
+        { id:"h3", prompt:'Fill: <i>Sono contento che voi ___ (venire) alla festa.</i>' },
       ] },
-    { tag:"📚 vocab · V-009", title:"diventare — one more transfer",
+    { tag:"📐 G-017", title:"dovere — spelling check",
+      explain:'Quick confirm on this morning\'s spelling slip (dovranno, not dovrenno).',
       items:[
-        { id:"r3", prompt:'Il tempo è ___ (diventare) brutto. ("The weather became bad" — masc. sing.)' },
+        { id:"h4", prompt:'Fill: <i>I miei genitori ___ (dovere) partire presto domani.</i>' },
       ] },
-    { tag:"B · comeback", title:"Handle the comeback",
+    { tag:"👂 ear + 💬 comeback", title:"Continuing today's Sardinia thread", tts:true,
+      explain:'Listen, then reply naturally — reuse today\'s Card 4 phrases if they fit.',
       items:[
-        { id:"r4", who:"a neighbor asks you", prompt:'<i>Com\'è andata la giornata?</i> — type the reply you\'d actually give.' },
+        { id:"h5", audio:"Noi restiamo in Sardegna per due settimane, è il nostro posto preferito!", who:"the visiting parent says",
+          q:'What do they say — and how would you reply?' },
       ] },
   ],
 };
 /* ==================================================================================== */
 
+// v0.17: tier-2 save endpoint (the tools/drive-save-endpoint.gs web-app URL) so
+// ⬇ Save for tutor also works from the published iPhone copy, away from the Mac.
+// Set ONCE by the tutor; '' = tier skipped. Copies inherit it — not a CONFIG field.
 const TUTOR_SAVE_URL = 'https://script.google.com/macros/s/AKfycby88gFnMprMuBLTwUdZmPSdSM7o-BweDZvtf95_YaB6fvderXbhh0uLXKSbagsbNDHbXw/exec';
 
 const $ = id => document.getElementById(id);
@@ -134,6 +166,7 @@ function pillClass(tag){ const t=(tag||'').toLowerCase();
   if(/^v|vocab/.test(t)) return 'background:var(--v)';
   return 'background:var(--accent)'; }
 
+/* ---- TTS engine (Web Speech, it-IT) ---- */
 let itVoice=null;
 function loadVoices(){ const vs=window.speechSynthesis?speechSynthesis.getVoices():[]; itVoice=vs.find(v=>/^it/i.test(v.lang))||null; }
 if(window.speechSynthesis){ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }
@@ -143,11 +176,13 @@ function speak(text,rate){ if(!window.speechSynthesis) return false; speechSynth
 function render(){
   $('h-title').textContent = CONFIG.title || 'Sheet';
   $('h-sub').textContent = CONFIG.subtitle || '';
+  // map
   if(CONFIG.map && CONFIG.map.length){
     let m='<div class="card"><h2><span class="pill dark">🗺️</span> Today’s map</h2>';
     CONFIG.map.forEach(r=> m+='<div class="maprow"><span class="ic">'+(r.ic||'•')+'</span><span><b>'+r.area+'</b> — '+(r.what||'')+(r.why?' <span class="why">· '+r.why+'</span>':'')+'</span></div>');
     m+='</div>'; $('map').innerHTML=m;
   }
+  // cards
   const root=$('cards');
   CARDS.forEach((card,ci)=>{
     const el=document.createElement('div'); el.className='card'; el.id='card-'+ci;
@@ -209,11 +244,32 @@ function cardText(ci){
     s+='      → '+(getAns(it)||'(blank)')+'\n'; });
   return s;
 }
-function clip(text,msg,el){ navigator.clipboard.writeText(text).then(()=>{ if(el) el.textContent=msg; },()=>{ if(el) el.textContent='(copy failed — select the box)'; }); }
+// v0.18.2: navigator.clipboard.writeText silently rejects in some local-server/older-WebKit
+// contexts even with a real click gesture behind it. Fall back to the legacy execCommand('copy')
+// path (a hidden textarea, select, execCommand) before giving up and asking the learner to
+// select-copy manually — that legacy path works in more contexts than the async Clipboard API.
+function legacyCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px'; ta.style.top='0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  let ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+  document.body.removeChild(ta); return ok;
+}
+function clip(text,msg,el){
+  const fail=()=>{ if(legacyCopy(text)){ if(el) el.textContent=msg; } else if(el) el.textContent='(clipboard blocked — text is in the box below, select & copy it)'; };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(()=>{ if(el) el.textContent=msg; }, fail); }
+  else fail();
+}
 function copyCard(ci){ let s=(CONFIG.pasteHeading||'My answers:')+'\n\n'+cardText(ci);
+  // v0.16.1: the 📝 note must ride back with a per-card copy too — include it when the learner has
+  // written one, and always on the LAST card (its natural place). Was only in copyAll → notes got stranded.
   const note=(($('remark')||{}).value||'').trim();
   if(note || ci===CARDS.length-1) s+='\n[📝 Note to tutor]\n  '+(note||'(none)')+'\n';
-  clip(s,'✓ copied — paste this section to me',$('cm-'+ci)); }
+  // v0.18.1: always surface the section text in #out too — clipboard.writeText silently rejects on
+  // non-secure contexts (e.g. file://) or blocked permissions, and copyCard previously had NO fallback
+  // (unlike copyAll), leaving the learner with a "copy failed" message and no way to get the text out.
+  $('out').textContent=s; $('out').style.display='block';
+  clip(s,'✓ copied — paste this section to me',$('cm-'+ci)); $('out').scrollIntoView({behavior:'smooth',block:'nearest'}); }
 function buildHandoff(){
   let s=(CONFIG.pasteHeading||'My answers:')+'\n'; CARDS.forEach((c,ci)=> s+='\n'+cardText(ci));
   s+='\n[📝 Note to tutor]\n  '+(($('remark')||{}).value||'(none)')+'\n';
@@ -225,10 +281,13 @@ function copyAll(){
   clip(s,'✓ copied — paste it back to me',$('saved')); $('out').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
+/* ---- ⬇ Save for tutor (v0.17) — three-tier, works at home AND from the published
+   iPhone copy: local /save (dictation-server) → Drive endpoint (TUTOR_SAVE_URL)
+   → plain download. Same contract as the dictation sheet's saveHandoff. ---- */
 function stamp(){ const d=new Date(), p=n=>String(n).padStart(2,'0');
   return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes()); }
 function sheetKind(){ return ((decodeURIComponent(location.pathname).split('/').pop()||'').replace(/\.html?$/,''))||'sheet'; }
-function sessionRelPath(name){
+function sessionRelPath(name){                       // /lessons/NNN-date/… (local) or /hw/NNN-date/… (published)
   const m = decodeURIComponent(location.pathname).match(/\/(?:lessons|hw)\/(\d{3}-\d{4}-\d{2}-\d{2})\//);
   return m ? 'lessons/'+m[1]+'/homework/'+name : null;
 }
@@ -245,6 +304,7 @@ function saveForTutor(){
   if(!rel){ download(); return; }
   const tierCloud=()=>{
     if(!TUTOR_SAVE_URL){ download(); return; }
+    // no custom headers → a CORS "simple request" (the standard Apps Script pattern)
     fetch(TUTOR_SAVE_URL,{method:'POST', body:JSON.stringify({path:rel, content:text})})
       .then(r=>r.json())
       .then(j=>{ if(j&&j.ok){ barMsg('✓ saved home into '+j.path+' — tell your tutor “done”'); } else { throw new Error((j&&j.error)||'save failed'); } })
@@ -259,7 +319,19 @@ function clearAll(){ if(!confirm('Clear all your answers?')) return; localStorag
   allItems().forEach(it=>{ if(it.opts){ document.querySelectorAll('input[name="'+it.id+'"]').forEach(r=>r.checked=false); } else { const el=$(it.id); if(el) el.value=''; } });
   const r=$('remark'); if(r) r.value=''; $('out').style.display='none'; updateProg(); }
 
-render(); load(); document.querySelectorAll('.growbox').forEach(autoGrow); updateProg();
+// v0.18.2: progressive unlock was CSS-class-only, decided purely at render time — a page reload
+// (e.g. to pick up a fix, or just an accidental refresh) re-locked every card even though the
+// learner's answers were still in localStorage. Re-derive the unlock state from saved answers.
+function unlockProgress(){
+  if(!CONFIG.progressive) return;
+  for(let ci=1; ci<CARDS.length; ci++){
+    const prevDone = CARDS[ci-1].items.every(it=> !!getAns(it));
+    if(!prevDone) break;
+    const el=$('card-'+ci); if(el) el.classList.remove('locked');
+    const btn=document.querySelector('[data-cont="'+(ci-1)+'"]'); if(btn) btn.classList.add('done');
+  }
+}
+render(); load(); unlockProgress(); document.querySelectorAll('.growbox').forEach(autoGrow); updateProg();
 </script>
 <div style="color:#c4bfb2;font-size:11px;text-align:center;padding:8px 0">build 2026-07-21-1349</div></body>
 </html>
